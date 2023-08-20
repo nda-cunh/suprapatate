@@ -4,5 +4,5 @@ if [ $1 == "patate" ]
 then
 	suprapatate
 else
-	/bin/git $@
+	/bin/git "$@"
 fi
