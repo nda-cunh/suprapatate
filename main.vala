@@ -1,4 +1,6 @@
 
+internal const string WALLPAPER = "/tmp/patator.png";
+
 class Patate {
 	public Patate(Cairo.ImageSurface texture) {
 		this.texture = texture;
@@ -36,7 +38,7 @@ class Patate {
 
 class Render : Gtk.Window {
 	public Render() {
-		this.image = new Cairo.ImageSurface.from_png ("/tmp/patator");
+		this.image = new Cairo.ImageSurface.from_png (WALLPAPER);
 		this.patate = new Cairo.ImageSurface.from_png(Environment.get_home_dir() + "/.local/share/patate.png");
 		this.area = new Gtk.DrawingArea();
 
@@ -66,12 +68,25 @@ class Render : Gtk.Window {
 	private Gtk.DrawingArea area;
 }
 
+void screen_window() {
+	int  width, height;
+    Gdk.Window win = Gdk.get_default_root_window();
+
+    width = win.get_width();
+    height = win.get_height();
+    Gdk.Pixbuf screenshot = Gdk.pixbuf_get_from_window(win, 0, 0, width, height);
+	try {
+		screenshot.save(WALLPAPER ,"png");
+	}
+	catch (Error e) {
+		printerr(e.message);
+	}
+}
+
 int	main(string []args)
 {
 	Gtk.init(ref args);
-	var ret = Posix.system("/usr/bin/gnome-screenshot -f /tmp/patator");
-	if (ret == -1)
-		printerr("Erreur");
+	screen_window();
 	new Render();
 	Gtk.main();
 	return (0);
