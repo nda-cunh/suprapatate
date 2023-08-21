@@ -51,6 +51,13 @@ class Render : Gtk.Window {
 		for (int i = 0; i < 30; i++)
 			tab += new Patate(patate);
 
+		base.key_press_event.connect((event) => {
+				string keyval = Gdk.keyval_name(event.keyval);
+				print("%s\n", keyval);
+				if (keyval == "Escape")
+					base.destroy();
+				return false;
+		});
 		area.draw.connect((ctx) => {
 			ctx.set_source_surface(image, 0, 0);
 			ctx.paint();
