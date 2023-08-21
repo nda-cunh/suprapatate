@@ -1,28 +1,27 @@
 
 internal const string WALLPAPER = "/tmp/patator.png";
+internal int WIDTH;
+internal int HEIGHT;
 
 class Patate {
 	public Patate(Cairo.ImageSurface texture) {
 		this.texture = texture;
-		var display = Gdk.Screen.get_default();
-		this.width = display.get_width();
-		this.height = display.get_height();
 
-		x = Random.double_range(1, width);
-		y = Random.double_range(1, height); 
-		vx = Random.double_range(0, 10);
-		vy = Random.double_range(0, 10);
+		x = Random.double_range(1, WIDTH - texture.get_width());
+		y = Random.double_range(1, HEIGHT - texture.get_height()); 
+		vx = Random.double_range(1, 10);
+		vy = Random.double_range(1, 10);
 		vr = Random.double_range(-180, 180);
 	}
 
 	public void draw(Cairo.Context ctx) {
 		var movx = x + vx;
 		var movy = y + vy;
-		if (movx >= width || movx <= 0)
+		if (movx >= WIDTH - texture.get_width() || movx <= 0)
 			vx *=-1;
 		else
 			x = movx;
-		if (movy >= height || movy <= 0)
+		if (movy >= HEIGHT - texture.get_height() || movy <= 0)
 			vy *=-1;
 		else
 			y = movy;
@@ -31,8 +30,6 @@ class Patate {
 	}
 
 	private Cairo.ImageSurface texture;
-	private double width;
-	private double height;
 	private double vr;
 	private double vx;
 	private double vy;
@@ -80,12 +77,11 @@ class Render : Gtk.Window {
 }
 
 void screen_window() {
-	int  width, height;
     Gdk.Window win = Gdk.get_default_root_window();
 
-    width = win.get_width();
-    height = win.get_height();
-    Gdk.Pixbuf screenshot = Gdk.pixbuf_get_from_window(win, 0, 0, width, height);
+    WIDTH = win.get_width();
+    HEIGHT = win.get_height();
+    Gdk.Pixbuf screenshot = Gdk.pixbuf_get_from_window(win, 0, 0, WIDTH, HEIGHT);
 	try {
 		screenshot.save(WALLPAPER ,"png");
 	}
