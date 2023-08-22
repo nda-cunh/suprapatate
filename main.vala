@@ -52,7 +52,7 @@ class Render : Gtk.Window {
 				string keyval = Gdk.keyval_name(event.keyval);
 				print("%s\n", keyval);
 				if (keyval == "Escape")
-					base.destroy();
+					Gtk.main_quit();
 				return false;
 		});
 		area.draw.connect((ctx) => {
@@ -61,9 +61,17 @@ class Render : Gtk.Window {
 
 			foreach (var p in tab)
 				p.draw(ctx);
-			area.queue_draw();
 			return false;
 		});
+
+		var timeout = new TimeoutSource(10);
+
+		timeout.set_callback(()=> {
+			area.queue_draw();
+			return true;
+		});
+
+		timeout.attach(GLib.MainContext.default());
 
 		base.add(area);
 		base.destroy.connect(Gtk.main_quit);
@@ -77,10 +85,11 @@ class Render : Gtk.Window {
 }
 
 void screen_window() {
-    Gdk.Window win = Gdk.get_default_root_window();
+    var win = Gdk.get_default_root_window();
+    var screen = Gdk.Screen.get_default();
 
-    WIDTH = win.get_width();
-    HEIGHT = win.get_height();
+    WIDTH = screen.get_width();
+    HEIGHT = screen.get_height();
     Gdk.Pixbuf screenshot = Gdk.pixbuf_get_from_window(win, 0, 0, WIDTH, HEIGHT);
 	try {
 		screenshot.save(WALLPAPER ,"png");
