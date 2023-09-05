@@ -1,5 +1,5 @@
 
-internal const string WALLPAPER = "/tmp/patator.png";
+internal string WALLPAPER;
 internal int WIDTH;
 internal int HEIGHT;
 
@@ -45,7 +45,7 @@ class Render : Gtk.Window {
 
 		Patate []tab = {};
 
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 1000; i++)
 			tab += new Patate(patate);
 
 		base.key_press_event.connect((event) => {
@@ -100,7 +100,8 @@ void screen_window() {
 }
 
 int	main(string []args)
-{
+{ 
+	WALLPAPER = "/tmp/" + Environment.get_user_name() + "_patate.png";
 	Gtk.init(ref args);
 	screen_window();
 	new Render();
